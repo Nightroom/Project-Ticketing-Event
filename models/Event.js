@@ -26,6 +26,6 @@ const Event = db.define('Event', {
     // ----------------------------------------
 
     StatusEvent: { type: DataTypes.STRING, defaultValue: 'Aktif' }
-}, { tableName: 'event', timestamps: false });
+}, { tableName: 'Event', timestamps: false });
 
 module.exports = Event;

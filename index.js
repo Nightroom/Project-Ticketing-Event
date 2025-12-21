@@ -17,8 +17,8 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // --- IMPORT MODELS ---
 const User = require('./models/User');
-const Event = require('./models/event');         
-const Pendaftaran = require('./models/pendaftaran');
+const Event = require('./models/Event');         
+const Pendaftaran = require('./models/Pendaftaran');
 const SavedEvent = require('./models/SavedEvent');
 
 // --- DEFINISI RELASI (ASSOCIATIONS) ---

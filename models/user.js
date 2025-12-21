@@ -27,7 +27,7 @@ const User = db.define('User', {
     },
     Role: { 
         type: DataTypes.ENUM('admin', 'user'), 
-        defaultValue: 'user' 
+        defaultValue: 'User' 
     },
     
     // --- KOLOM BARU (Update) ---
@@ -39,7 +39,7 @@ const User = db.define('User', {
     // ---------------------------
 
 }, {
-    tableName: 'user',
+    tableName: 'User',
     timestamps: false,
     hooks: {
         // Hook sebelum data dibuat (Hash Password)
