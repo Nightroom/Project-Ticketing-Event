@@ -8,14 +8,16 @@ const db = new Sequelize(
     process.env.DB_PASS, 
     {
         host: process.env.DB_HOST,
-        port: process.env.DB_PORT, // <--- PENTING: Aiven pakai port khusus (bukan 3306)
+        port: process.env.DB_PORT, 
         dialect: 'mysql',
+        // --- TAMBAHKAN BARIS DI BAWAH INI ---
+        dialectModule: require('mysql2'), 
+        // ------------------------------------
         logging: false, 
         dialectOptions: {
-            // <--- INI KUNCINYA SUPAYA AIVEN MAU KONEK
             ssl: {
                 require: true,
-                rejectUnauthorized: false // Memaksa Node.js menerima sertifikat Aiven
+                rejectUnauthorized: false 
             }
         },
         pool: {
@@ -27,7 +29,6 @@ const db = new Sequelize(
     }
 );
 
-// Fungsi untuk mengetes koneksi dengan RETRY LOGIC
 const testConnection = async () => {
     try {
         await db.authenticate();
