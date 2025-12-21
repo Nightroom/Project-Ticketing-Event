@@ -1,4 +1,4 @@
-const Event = require('../models/Event');
+const Event = require('../models/event');
 const { Op } = require('sequelize');
 const fs = require('fs');
 const path = require('path');
