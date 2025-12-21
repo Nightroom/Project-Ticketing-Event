@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // --- IMPORT MODELS ---
-const User = require('./models/User');
+const User = require('./models/user');
 const Event = require('./models/event');         
 const Pendaftaran = require('./models/pendaftaran');
 const SavedEvent = require('./models/savedEvent');
