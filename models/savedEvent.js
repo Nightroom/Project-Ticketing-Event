@@ -20,7 +20,7 @@ const SavedEvent = db.define('SavedEvent', {
         defaultValue: DataTypes.NOW 
     }
 }, { 
-    tableName: 'saved_event', // Nama tabel di database MySQL
+    tableName: 'SavedEvent', // Nama tabel di database MySQL
     timestamps: false 
 });
 

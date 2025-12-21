@@ -1,5 +1,5 @@
-const Pendaftaran = require('../models/Pendaftaran');
-const Event = require('../models/Event');
+const Pendaftaran = require('../models/pendaftaran');
+const Event = require('../models/event');
 
 // 1. Pesan Tiket (Checkout & Payment)
 exports.pesanTiket = async (req, res) => {

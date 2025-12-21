@@ -17,9 +17,9 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // --- IMPORT MODELS ---
 const User = require('./models/User');
-const Event = require('./models/Event');         
-const Pendaftaran = require('./models/Pendaftaran');
-const SavedEvent = require('./models/SavedEvent');
+const Event = require('./models/event');         
+const Pendaftaran = require('./models/pendaftaran');
+const SavedEvent = require('./models/savedEvent');
 
 // --- DEFINISI RELASI (ASSOCIATIONS) ---
 // Ini memberi tahu Sequelize bagaimana tabel saling berhubungan (Join)

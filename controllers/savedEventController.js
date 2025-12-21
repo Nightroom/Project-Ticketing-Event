@@ -1,5 +1,5 @@
-const SavedEvent = require('../models/SavedEvent');
-const Event = require('../models/Event');
+const SavedEvent = require('../models/savedEvent');
+const Event = require('../models/event');
 
 // 1. Simpan Event ke Wishlist (Add to Saved)
 exports.saveEvent = async (req, res) => {
