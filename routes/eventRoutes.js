@@ -13,14 +13,15 @@ router.get('/', eventController.getAllEvents);
 router.get('/:id', eventController.getEventById);
 
 
-// --- RUTE KHUSUS ADMIN ---
-// Memerlukan login (verifyToken) DAN hak akses (isAdmin)
+// --- RUTE UNTUK CREATE/UPDATE (ADMIN CHECK DIHAPUS SESUAI REQUEST) ---
 
 // Menambahkan event baru + Upload Gambar
-// 'imageEvent' adalah nama key form-data yang harus dipakai di Frontend/Postman
-router.post('/', verifyToken, isAdmin, upload.single('imageEvent'), eventController.createEvent);
+// SEBELUM: router.post('/', verifyToken, isAdmin, upload.single('imageEvent'), ...);
+// SESUDAH: Cukup verifyToken saja (Login required)
+router.post('/', verifyToken, upload.single('imageEvent'), eventController.createEvent);
 
 // Memperbarui data event + Ganti Gambar
+// (Opsional: Kalau edit mau dilonggarkan juga, hapus isAdmin di sini. Kalau tidak, biarkan)
 router.put('/:id', verifyToken, isAdmin, upload.single('imageEvent'), eventController.updateEvent);
 
 // Menghapus event (Soft delete)
