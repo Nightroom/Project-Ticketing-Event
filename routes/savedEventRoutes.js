@@ -3,15 +3,17 @@ const router = express.Router();
 const savedEventController = require('../controllers/savedEventController');
 const { verifyToken } = require('../middleware/authMiddleware');
 
-// Semua rute di sini butuh login (verifyToken)
+// --- RUTE WISHLIST / SAVED EVENT ---
 
-// 1. Simpan Event (POST /api/saved)
-router.post('/', verifyToken, savedEventController.saveEvent);
+// 1. Toggle Save (Simpan/Hapus Otomatis)
+// Cukup satu endpoint POST. Kalau belum ada -> Save. Kalau udah ada -> Unsave.
+// Nama fungsi harus 'toggleSavedEvent' (sesuai controller baru)
+router.post('/', verifyToken, savedEventController.toggleSavedEvent);
 
-// 2. Lihat Daftar Simpanan (GET /api/saved)
-router.get('/', verifyToken, savedEventController.getSavedEvents);
+// 2. Lihat Daftar Simpanan
+// Nama fungsi harus 'getUserSavedEvents' (sesuai controller baru)
+router.get('/', verifyToken, savedEventController.getUserSavedEvents);
 
-// 3. Hapus Simpanan (DELETE /api/saved/:eventID)
-router.delete('/:eventID', verifyToken, savedEventController.unsaveEvent);
+// NOTE: Tidak perlu rute DELETE lagi, karena sudah dihandle oleh POST (Toggle)
 
 module.exports = router;

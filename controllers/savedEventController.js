@@ -1,75 +1,89 @@
-const SavedEvent = require('../models/savedEvent');
-const Event = require('../models/event');
+const SavedEvent = require('../models/savedEvent'); // Pastikan nama file model benar
+const Event = require('../models/event');           // Pastikan nama file model benar
 
-// 1. Simpan Event ke Wishlist (Add to Saved)
-exports.saveEvent = async (req, res) => {
+// --- 1. TOGGLE SAVE (Simpan / Hapus) ---
+exports.toggleSavedEvent = async (req, res) => {
     try {
-        const { eventID } = req.body;
-        const userID = req.user.id; // Diambil dari Token JWT
+        // Ambil UserID dari Token (Pastikan user sudah login)
+        const userID = req.user.id; 
+        // Ambil EventID dari Body yang dikirim Frontend
+        const { eventID } = req.body; 
 
-        // Cek apakah event valid
-        const event = await Event.findByPk(eventID);
-        if (!event) {
-            return res.status(404).json({ message: "Event tidak ditemukan!" });
+        // Validasi: EventID tidak boleh kosong
+        if (!eventID) {
+            return res.status(400).json({ 
+                status: "error",
+                message: "EventID wajib dikirim!" 
+            });
         }
 
-        // Cek apakah sudah pernah disimpan sebelumnya
+        // Cek di database: Apakah user ini sudah simpan event ini?
         const existingSave = await SavedEvent.findOne({
-            where: { UserID: userID, EventID: eventID }
+            where: {
+                UserID: userID,
+                EventID: eventID
+            }
         });
 
         if (existingSave) {
-            return res.status(400).json({ message: "Event ini sudah ada di daftar simpanan Anda." });
+            // JIKA SUDAH ADA -> HAPUS (UNSAVE)
+            await existingSave.destroy();
+            return res.status(200).json({ 
+                status: "success", 
+                message: "Event berhasil dihapus dari daftar simpan.", 
+                isSaved: false 
+            });
+        } else {
+            // JIKA BELUM ADA -> BUAT BARU (SAVE)
+            await SavedEvent.create({
+                UserID: userID,
+                EventID: eventID
+            });
+            return res.status(201).json({ 
+                status: "success", 
+                message: "Event berhasil disimpan ke wishlist!", 
+                isSaved: true 
+            });
         }
 
-        // Simpan ke database
-        await SavedEvent.create({
-            UserID: userID,
-            EventID: eventID
-        });
-
-        res.status(201).json({ status: "success", message: "Event berhasil disimpan!" });
-
     } catch (error) {
-        res.status(500).json({ status: "error", message: error.message });
+        console.error("Error toggleSavedEvent:", error);
+        res.status(500).json({ 
+            status: "error", 
+            message: "Terjadi kesalahan server.",
+            error: error.message 
+        });
     }
 };
 
-// 2. Lihat Semua Event yang Disimpan (Get User Wishlist)
-exports.getSavedEvents = async (req, res) => {
+// --- 2. GET USER SAVED EVENTS (Lihat Daftar) ---
+exports.getUserSavedEvents = async (req, res) => {
     try {
         const userID = req.user.id;
 
+        // Cari semua data di tabel SavedEvent milik user ini
         const savedEvents = await SavedEvent.findAll({
             where: { UserID: userID },
-            include: [{
-                model: Event, // Join ke tabel Event agar dapat detailnya (Nama, Gambar, dll)
-                attributes: ['EventID', 'NamaEvent', 'TanggalEvent', 'Lokasi', 'Image', 'Kategori'] 
-            }]
+            include: [
+                {
+                    model: Event, // Sertakan data Event lengkap
+                    attributes: ['EventID', 'NamaEvent', 'TanggalEvent', 'Lokasi', 'Image', 'Harga'] // Ambil kolom penting saja biar ringan
+                }
+            ],
+            order: [['SavedEventID', 'DESC']] // Urutkan dari yang terakhir disimpan
         });
 
-        res.status(200).json({ status: "success", data: savedEvents });
-    } catch (error) {
-        res.status(500).json({ status: "error", message: error.message });
-    }
-};
-
-// 3. Hapus Event dari Simpanan (Remove from Wishlist)
-exports.unsaveEvent = async (req, res) => {
-    try {
-        const { eventID } = req.params;
-        const userID = req.user.id;
-
-        const deleted = await SavedEvent.destroy({
-            where: { UserID: userID, EventID: eventID }
+        res.status(200).json({
+            status: "success",
+            data: savedEvents
         });
 
-        if (!deleted) {
-            return res.status(404).json({ message: "Event tidak ditemukan di daftar simpanan." });
-        }
-
-        res.status(200).json({ status: "success", message: "Event dihapus dari daftar simpanan." });
     } catch (error) {
-        res.status(500).json({ status: "error", message: error.message });
+        console.error("Error getUserSavedEvents:", error);
+        res.status(500).json({ 
+            status: "error", 
+            message: "Gagal mengambil data saved event.",
+            error: error.message 
+        });
     }
 };
